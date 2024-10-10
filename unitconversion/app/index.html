@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Conversion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden { display: none; }
+        .active { display: block; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<div class="container mx-auto mt-10">
+    <!-- Navbar -->
+    <nav class="flex justify-around bg-blue-500 text-white p-4">
+        <button id="weightTab" class="tab focus:outline-none focus:bg-blue-700 p-2">Weight</button>
+        <button id="distanceTab" class="tab focus:outline-none focus:bg-blue-700 p-2">Distance</button>
+        <button id="temperatureTab" class="tab focus:outline-none focus:bg-blue-700 p-2">Temperature</button>
+    </nav>
+
+    <!-- Weight Conversion Form -->
+    <div id="weightContent" class="tabContent active p-6 bg-white shadow-md">
+        <h2 class="text-lg font-bold mb-4">Weight Conversion</h2>
+        <input type="text" id="weightInput" placeholder="Enter value(s) in pounds or kg, separated by commas" class="border p-2 mb-4 w-full">
+        <div class="flex justify-between mb-4">
+            <button onclick="convertWeight('lb', 'kg')" class="bg-green-500 text-white p-2 rounded">Pounds to Kilograms</button>
+            <button onclick="convertWeight('kg', 'lb')" class="bg-red-500 text-white p-2 rounded">Kilograms to Pounds</button>
+        </div>
+        <div id="weightResult" class="mt-4 text-blue-700 font-semibold"></div>
+    </div>
+
+    <!-- Distance Conversion Form -->
+    <div id="distanceContent" class="tabContent hidden p-6 bg-white shadow-md">
+        <h2 class="text-lg font-bold mb-4">Distance Conversion</h2>
+        <input type="text" id="distanceInput" placeholder="Enter value(s) in miles or km, separated by commas" class="border p-2 mb-4 w-full">
+        <div class="flex justify-between mb-4">
+            <button onclick="convertDistance('mi', 'km')" class="bg-green-500 text-white p-2 rounded">Miles to Kilometers</button>
+            <button onclick="convertDistance('km', 'mi')" class="bg-red-500 text-white p-2 rounded">Kilometers to Miles</button>
+        </div>
+        <div id="distanceResult" class="mt-4 text-blue-700 font-semibold"></div>
+    </div>
+
+    <!-- Temperature Conversion Form -->
+    <div id="temperatureContent" class="tabContent hidden p-6 bg-white shadow-md">
+        <h2 class="text-lg font-bold mb-4">Temperature Conversion</h2>
+        <input type="text" id="temperatureInput" placeholder="Enter value(s) in Celsius or Fahrenheit, separated by commas" class="border p-2 mb-4 w-full">
+        <div class="flex justify-between mb-4">
+            <button onclick="convertTemperature('C', 'F')" class="bg-green-500 text-white p-2 rounded">Celsius to Fahrenheit</button>
+            <button onclick="convertTemperature('F', 'C')" class="bg-red-500 text-white p-2 rounded">Fahrenheit to Celsius</button>
+        </div>
+        <div id="temperatureResult" class="mt-4 text-blue-700 font-semibold"></div>
+    </div>
+</div>
+
+<!-- JavaScript for Tab Functionality and Conversions -->
+<script>
+    // Tab functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tabContent').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('.tab').forEach(button => button.classList.remove('bg-blue-700'));
+            tab.classList.add('bg-blue-700');
+            const contentId = tab.id.replace('Tab', 'Content');
+            document.getElementById(contentId).classList.remove('hidden');
+        });
+    });
+
+    // Higher-order function for unit conversion
+    function conversionFactory(fromUnit, toUnit) {
+        const conversions = {
+            'lb_kg': (value) => value * 0.453592,
+            'kg_lb': (value) => value / 0.453592,
+            'mi_km': (value) => value * 1.60934,
+            'km_mi': (value) => value / 1.60934,
+            'C_F': (value) => (value * 9/5) + 32,
+            'F_C': (value) => (value - 32) * 5/9
+        };
+        return conversions[`${fromUnit}_${toUnit}`];
+    }
+
+    // Weight Conversion
+    function convertWeight(fromUnit, toUnit) {
+        const input = document.getElementById('weightInput').value.split(',').map(Number);
+        const converter = conversionFactory(fromUnit, toUnit);
+        const result = input.map(converter);
+        document.getElementById('weightResult').innerHTML = `Converted: ${result.join(', ')}`;
+    }
+
+    // Distance Conversion
+    function convertDistance(fromUnit, toUnit) {
+        const input = document.getElementById('distanceInput').value.split(',').map(Number);
+        const converter = conversionFactory(fromUnit, toUnit);
+        const result = input.map(converter);
+        document.getElementById('distanceResult').innerHTML = `Converted: ${result.join(', ')}`;
+    }
+
+    // Temperature Conversion
+    function convertTemperature(fromUnit, toUnit) {
+        const input = document.getElementById('temperatureInput').value.split(',').map(Number);
+        const converter = conversionFactory(fromUnit, toUnit);
+        const result = input.map(converter);
+        document.getElementById('temperatureResult').innerHTML = `Converted: ${result.join(', ')}`;
+    }
+</script>
+
+</body>
+</html>
